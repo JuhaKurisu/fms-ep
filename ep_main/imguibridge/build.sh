@@ -10,10 +10,10 @@ cd "$(dirname "$0")"
 
 IMGUI_VER="1.92.7.1"
 
-# --- OS ごとの natives ---
+# --- OS ごとの natives とクラスパス区切り（javac は Windows では ; を使う） ---
 case "$(uname -s)" in
-  Darwin) NATIVES_OS="macos" ;;
-  MINGW*|MSYS*|CYGWIN*) NATIVES_OS="windows" ;;
+  Darwin) NATIVES_OS="macos"; CPSEP=":" ;;
+  MINGW*|MSYS*|CYGWIN*) NATIVES_OS="windows"; CPSEP=";" ;;
   *) echo "未対応の OS: $(uname -s)" >&2; exit 1 ;;
 esac
 
@@ -47,7 +47,7 @@ done
 
 echo "==> Java をコンパイル"
 rm -rf classes && mkdir -p classes
-"$JAVAC" -encoding UTF-8 -cp "$GPUBRIDGE:$BINDING" -d classes java/imguibridge/*.java
+"$JAVAC" -encoding UTF-8 -cp "$GPUBRIDGE$CPSEP$BINDING" -d classes java/imguibridge/*.java
 
 echo "==> jar を作成"
 "$JAR" cf imguibridge.jar -C classes .
