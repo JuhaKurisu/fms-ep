@@ -1,0 +1,4 @@
+# ビルド中間物。スケッチの code/ に配置されたバイナリはコミットする。
+/target/
+/classes/
+/gpubridge.jar
