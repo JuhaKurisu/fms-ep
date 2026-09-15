@@ -4,16 +4,19 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-dispatch2 = "0.3.1"
 jni = "0.21"
 naga = { version = "30.0.1", features = ["wgsl-in"] }
-objc2 = "0.6.4"
-objc2-core-foundation = "0.3.2"
-objc2-foundation = "0.3.2"
-objc2-quartz-core = { version = "0.3.2", features = ["CAMetalLayer"] }
 pollster = "1.0.1"
 raw-window-handle = "0.6.2"
 wgpu = "30.0.1"
 
 [lib]
 crate-type = ["cdylib"]
+
+# CALayer 経路は macOS でしか使わない。無条件依存にすると他 OS でビルドできない。
+[target.'cfg(target_os = "macos")'.dependencies]
+dispatch2 = "0.3.1"
+objc2 = "0.6.4"
+objc2-core-foundation = "0.3.2"
+objc2-foundation = "0.3.2"
+objc2-quartz-core = { version = "0.3.2", features = ["CAMetalLayer"] }

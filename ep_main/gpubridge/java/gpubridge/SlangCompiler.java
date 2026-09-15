@@ -140,9 +140,12 @@ final class SlangCompiler {
     }
     // PATH で見つかるならそのまま。GUI アプリ（Processing IDE）はシェルの PATH を
     // 引き継がないことがあるので、よくある置き場所も候補にする。
-    Path home = Path.of(System.getProperty("user.home"), "bin", "slang", "bin", "slangc");
-    if (Files.isExecutable(home)) {
-      return home.toString();
+    Path dir = Path.of(System.getProperty("user.home"), "bin", "slang", "bin");
+    for (String name : new String[] {"slangc", "slangc.exe"}) {
+      Path p = dir.resolve(name);
+      if (Files.isExecutable(p)) {
+        return p.toString();
+      }
     }
     return "slangc";
   }

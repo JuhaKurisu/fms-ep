@@ -187,7 +187,7 @@ unsafe fn attach(
     let surface = unsafe {
         instance
             .create_surface_unsafe(wgpu::SurfaceTargetUnsafe::RawHandle {
-                raw_display_handle: RawDisplayHandle::Windows(WindowsDisplayHandle::new()),
+                raw_display_handle: Some(RawDisplayHandle::Windows(WindowsDisplayHandle::new())),
                 raw_window_handle: RawWindowHandle::Win32(Win32WindowHandle::new(hwnd)),
             })
             .map_err(|e| format!("HWND から surface を作れない: {e}"))?

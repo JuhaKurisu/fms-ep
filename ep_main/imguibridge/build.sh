@@ -9,8 +9,16 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 IMGUI_VER="1.92.7.1"
+
+# --- OS ごとの natives ---
+case "$(uname -s)" in
+  Darwin) NATIVES_OS="macos" ;;
+  MINGW*|MSYS*|CYGWIN*) NATIVES_OS="windows" ;;
+  *) echo "未対応の OS: $(uname -s)" >&2; exit 1 ;;
+esac
+
 BINDING="libs/imgui-java-binding-$IMGUI_VER.jar"
-NATIVES="libs/imgui-java-natives-macos-$IMGUI_VER.jar"
+NATIVES="libs/imgui-java-natives-$NATIVES_OS-$IMGUI_VER.jar"
 GPUBRIDGE="../gpubridge/gpubridge.jar"
 
 # --- JDK を探す（gpubridge/build.sh と同じ） ---
@@ -28,7 +36,7 @@ JAR="$JDK/bin/jar"
 
 echo "==> imgui-java の jar を確認"
 mkdir -p libs
-for j in "imgui-java-binding" "imgui-java-natives-macos"; do
+for j in "imgui-java-binding" "imgui-java-natives-$NATIVES_OS"; do
   f="libs/$j-$IMGUI_VER.jar"
   if [ ! -f "$f" ]; then
     echo "    取得: $j-$IMGUI_VER"
@@ -58,7 +66,7 @@ for sketch in "${TARGETS[@]}"; do
   mkdir -p "$sketch/code"
   # 上書き cp は避ける(gpubridge/build.sh の署名キャッシュ注意に倣う)
   rm -f "$sketch/code/imguibridge.jar" \
-        "$sketch/code/imgui-java-binding-"*.jar "$sketch/code/imgui-java-natives-macos-"*.jar
+        "$sketch/code/imgui-java-binding-"*.jar "$sketch/code/imgui-java-natives-"*.jar
   cp imguibridge.jar "$BINDING" "$NATIVES" "$sketch/code/"
   echo "==> 配置: $sketch/code/"
 done
